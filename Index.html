@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resistenzia Manager</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts Link for Montserrat -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- PWA: Link to manifest.json -->
+    <link rel="manifest" href="/manifest.json">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #1a1a1a; /* Fondo oscuro */
+            color: #f8f8f8; /* Texto claro por defecto */
+        }
+        .container {
+            max-width: 900px;
+            background-color: #2a2a2a; /* Contenedor ligeramente más claro que el fondo */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4); /* Sombra más pronunciada */
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .hidden {
+            display: none;
+        }
+        /* Style for the iframe container to make it responsive */
+        .iframe-container {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            padding-top: 75%; /* 4:3 Aspect Ratio (height / width * 100%) */
+        }
+        .iframe-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            border-radius: 0.5rem; /* rounded-lg */
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">
+    <div class="container shadow-lg rounded-xl p-6 sm:p-8 lg:p-10 w-full">
+
+        <!-- Login Section -->
+        <section id="login-section" class="fade-in">
+            <!-- Logo added here -->
+            <div class="flex justify-center mb-6">
+                <img src="https://i.imgur.com/fuK5gOa.png" alt="Logotipo Resistenzia" class="w-32 h-32 object-contain rounded-full shadow-lg border-2 border-fuchsia-600 p-2">
+            </div>
+            <h2 class="text-3xl font-bold text-center text-fuchsia-400 mb-8">Resistenzia Manager</h2>
+            <div class="mb-4">
+                <label for="username" class="block text-gray-200 text-sm font-medium mb-2">Usuario:</label>
+                <input type="text" id="username" class="w-full px-4 py-2 border border-fuchsia-600 bg-gray-900 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-fuchsia-500 transition duration-200" placeholder="Introduce tu usuario">
+            </div>
+            <div class="mb-6">
+                <label for="password" class="block text-gray-200 text-sm font-medium mb-2">Contraseña:</label>
+                <div class="relative">
+                    <input type="password" id="password" class="w-full px-4 py-2 border border-fuchsia-600 bg-gray-900 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-fuchsia-500 transition duration-200" placeholder="Introduce tu contraseña">
+                    <!-- Button to toggle password visibility -->
+                    <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 text-gray-400 focus:outline-none">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <button id="login-button" class="w-full bg-fuchsia-600 text-white py-3 rounded-md hover:bg-fuchsia-700 focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 transition duration-200 font-semibold text-lg shadow-md">Iniciar Sesión</button>
+            <p id="error-message" class="text-red-500 text-center mt-4 hidden text-sm font-medium">No formas parte de esta peña o las claves son erróneas.</p>
+        </section>
+
+        <!-- Landing Page Section -->
+        <section id="landing-section" class="hidden fade-in">
+            <h2 class="text-3xl font-bold text-center text-fuchsia-400 mb-8">¡Bienvenido a la Peña!</h2>
+            <p class="text-gray-300 text-center mb-10 text-lg">Selecciona una opción para continuar:</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <button id="contabilidad-button" class="bg-fuchsia-600 text-white py-4 px-6 rounded-xl hover:bg-fuchsia-700 focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 transition duration-200 font-bold text-xl shadow-lg transform hover:scale-105">
+                    Contabilidad
+                </button>
+                <button id="galeria-button" class="bg-gray-800 text-fuchsia-400 py-4 px-6 rounded-xl hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:ring-offset-2 transition duration-200 font-bold text-xl shadow-lg transform hover:scale-105">
+                    Galería de Fotos
+                </button>
+            </div>
+            <button id="logout-button-landing" class="mt-8 w-full bg-gray-700 text-gray-300 py-2 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition duration-200 font-medium text-md shadow-sm">Cerrar Sesión</button>
+        </section>
+
+        <!-- Contabilidad Section -->
+        <section id="contabilidad-section" class="hidden fade-in">
+            <h2 class="text-3xl font-bold text-center text-fuchsia-400 mb-8">Estado de Contabilidad</h2>
+            <div class="iframe-container bg-gray-800 rounded-lg shadow-inner border border-fuchsia-600 mb-6">
+                <!-- Google Sheet embedded via iframe -->
+                <!-- Make sure the Google Sheet's sharing settings allow anyone with the link to view -->
+                <iframe src="https://docs.google.com/spreadsheets/d/1AnWaTCZTxpF-_Xs_B4sOdFmh6EnBdFZnM51u2H0RO58/edit?usp=sharing"></iframe>
+            </div>
+            <button id="back-to-landing-contabilidad" class="w-full bg-gray-700 text-gray-200 py-3 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition duration-200 font-semibold text-lg shadow-md">Volver al Inicio</button>
+            <button id="logout-button-contabilidad" class="mt-4 w-full bg-gray-800 text-gray-400 py-2 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 transition duration-200 font-medium text-md shadow-sm">Cerrar Sesión</button>
+        </section>
+
+        <!-- Galeria Section -->
+        <section id="galeria-section" class="hidden fade-in">
+            <h2 class="text-3xl font-bold text-center text-fuchsia-400 mb-8">Galería de Fotos de la Peña</h2>
+            <div id="image-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-6">
+                <!-- Images will be inserted here by JavaScript -->
+            </div>
+            <button id="back-to-landing-galeria" class="w-full bg-gray-700 text-gray-200 py-3 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition duration-200 font-semibold text-lg shadow-md">Volver al Inicio</button>
+            <button id="logout-button-galeria" class="mt-4 w-full bg-gray-800 text-gray-400 py-2 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 transition duration-200 font-medium text-md shadow-sm">Cerrar Sesión</button>
+        </section>
+
+    </div>
+
+    <script>
+        // Get references to HTML elements
+        const loginSection = document.getElementById('login-section');
+        const landingSection = document.getElementById('landing-section');
+        const contabilidadSection = document.getElementById('contabilidad-section');
+        const galeriaSection = document.getElementById('galeria-section');
+
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const togglePasswordButton = document.getElementById('togglePassword'); // Get the toggle button
+        const loginButton = document.getElementById('login-button');
+        const errorMessage = document.getElementById('error-message');
+
+        const contabilidadButton = document.getElementById('contabilidad-button');
+        const galeriaButton = document.getElementById('galeria-button');
+        const backToLandingContabilidadButton = document.getElementById('back-to-landing-contabilidad');
+        const backToLandingGaleriaButton = document.getElementById('back-to-landing-galeria');
+
+        const logoutButtonLanding = document.getElementById('logout-button-landing');
+        const logoutButtonContabilidad = document.getElementById('logout-button-contabilidad');
+        const logoutButtonGaleria = document.getElementById('logout-button-galeria');
+
+        const imageGrid = document.getElementById('image-grid');
+
+        // --- Data for the application ---
+        // Accounting data is now loaded directly from Google Sheet via iframe,
+        // so the local 'accountingEntries' array is no longer used for display in the Contabilidad section.
+        const accountingEntries = [
+            { date: '2025-01-15', concept: 'Cuota Enero - Juan', amount: 25.00, type: 'Ingreso', paidBy: 'Juan Pérez', status: 'Pagado' },
+            { date: '2025-01-15', concept: 'Cuota Enero - Maria', amount: 25.00, type: 'Ingreso', paidBy: 'María López', status: 'Pagado' },
+            { date: '2025-01-20', concept: 'Alquiler Local Enero', amount: -150.00, type: 'Gasto', paidBy: 'Tesorería', status: 'Pagado' },
+            { date: '2025-02-01', concept: 'Cuota Febrero - Carlos', amount: 25.00, type: 'Ingreso', paidBy: 'Carlos García', status: 'Pagado' },
+            { date: '2025-02-05', concept: 'Compra de bebidas para fiesta', amount: -75.50, type: 'Gasto', paidBy: 'Tesorería', status: 'Pagado' },
+            { date: '2025-02-10', concept: 'Cuota Febrero - Ana', amount: 25.00, type: 'Ingreso', paidBy: 'Ana Martínez', status: 'Pendiente' },
+            { date: '2025-03-01', concept: 'Cuota Marzo - Pedro', amount: 25.00, type: 'Ingreso', paidBy: 'Pedro Ruiz', status: 'Pagado' },
+            { date: '2025-03-12', concept: 'Material de decoración Carnaval', amount: -40.00, type: 'Gasto', paidBy: 'Tesorería', status: 'Pendiente' },
+            { date: '2025-03-15', concept: 'Cuota Marzo - Laura', amount: 25.00, type: 'Ingreso', paidBy: 'Laura Sánchez', status: 'Pagado' },
+            { date: '2025-04-01', concept: 'Cuota Abril - Miguel', amount: 25.00, type: 'Ingreso', paidBy: 'Miguel Torres', status: 'Pagado' },
+            { date: '2025-04-10', concept: 'Cena de Hermandad', amount: -200.00, type: 'Gasto', paidBy: 'Tesorería', status: 'Pagado' },
+            { date: '2025-05-01', concept: 'Cuota Mayo - Elena', amount: 25.00, type: 'Ingreso', paidBy: 'Elena Vidal', status: 'Pendiente' },
+            { date: '2025-05-15', concept: 'Reparación de equipo de sonido', amount: -90.00, type: 'Gasto', paidBy: 'Tesorería', status: 'Pagado' },
+            { date: '2025-06-01', concept: 'Cuota Junio - Sofía', amount: 25.00, type: 'Ingreso', paidBy: 'Sofía Romero', status: 'Pagado' },
+            { date: '2025-06-05', concept: 'Compra de disfraces', amount: -120.00, type: 'Gasto', paidBy: 'Tesorería', status: 'Pendiente' }
+        ];
+
+
+        // Gallery image data (using placeholder images)
+        const galleryImages = [
+            { src: 'https://placehold.co/400x300/e0e0e0/555555?text=Fiesta+1', alt: 'Foto de la fiesta 1' },
+            { src: 'https://placehold.co/400x300/d0d0d0/444444?text=Evento+de+Verano', alt: 'Foto del evento de verano' },
+            { src: 'https://placehold.co/400x300/c0c0c0/333333?text=Reunión+Anual', alt: 'Foto de la reunión anual' },
+            { src: 'https://placehold.co/400x300/b0b0b0/222222?text=Celebración', alt: 'Foto de celebración' },
+            { src: 'https://placehold.co/400x300/a0a0a0/111111?text=Amigos', alt: 'Foto de amigos en la peña' },
+            { src: 'https://placehold.co/400x300/909090/000000?text=Grupo', alt: 'Foto del grupo de la peña' },
+            { src: 'https://i.imgur.com/0pnWy8A.jpeg', alt: 'Grupo de la peña en un evento' }
+        ];
+
+        // --- Functions to manage section visibility ---
+
+        /**
+         * Hides all main sections of the application.
+         */
+        function hideAllSections() {
+            loginSection.classList.add('hidden');
+            landingSection.classList.add('hidden');
+            contabilidadSection.classList.add('hidden');
+            galeriaSection.classList.add('hidden');
+        }
+
+        /**
+         * Shows a specific section and applies a fade-in effect.
+         * @param {HTMLElement} section - The HTML section element to show.
+         */
+        function showSection(section) {
+            hideAllSections();
+            section.classList.remove('hidden');
+            section.classList.add('fade-in'); // Add fade-in class for animation
+        }
+
+        // --- Event Handlers ---
+
+        /**
+         * Handles the login attempt.
+         */
+        loginButton.addEventListener('click', () => {
+            const username = usernameInput.value;
+            const password = passwordInput.value;
+
+            // Login credentials: User: Poblete, Password: 2112Poblete
+            if (username === 'Poblete' && password === '2112Poblete') {
+                showSection(landingSection);
+                errorMessage.classList.add('hidden'); // Hide error message on success
+                usernameInput.value = ''; // Clear input fields
+                passwordInput.value = '';
+            } else {
+                errorMessage.textContent = 'No formas parte de esta peña o las claves son erróneas.';
+                errorMessage.classList.remove('hidden'); // Show error message
+            }
+        });
+
+        // Event listener for the toggle password button
+        togglePasswordButton.addEventListener('click', () => {
+            // Toggle the type attribute between 'password' and 'text'
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+
+            // You could also change the SVG icon here to represent open/closed eye
+            const eyeOpenPath = "M15 12a3 3 0 11-6 0 3 3 0 016 0z";
+            const eyeClosedPath = "M13.879 17.121A3 3 0 0112 15a3 3 0 01-1.879-5.121M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z";
+            const svgPath = togglePasswordButton.querySelector('svg path:last-child'); // Targeting the eye shape path
+
+            if (type === 'password') {
+                svgPath.setAttribute('d', "M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"); // Eye open
+            } else {
+                svgPath.setAttribute('d', "M13.879 17.121A3 3 0 0112 15a3 3 0 01-1.879-5.121M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"); // Eye closed (with a strike-through effect if you want, this is a basic toggle)
+            }
+        });
+
+
+        /**
+         * Navigates to the Accounting section and renders the data.
+         */
+        contabilidadButton.addEventListener('click', () => {
+            showSection(contabilidadSection);
+        });
+
+        /**
+         * Navigates to the Gallery section and renders the images.
+         */
+        galeriaButton.addEventListener('click', () => {
+            showSection(galeriaSection);
+            renderGalleryImages();
+        });
+
+        /**
+         * Navigates back to the landing page from any section.
+         */
+        function backToLanding() {
+            showSection(landingSection);
+        }
+
+        backToLandingContabilidadButton.addEventListener('click', backToLanding);
+        backToLandingGaleriaButton.addEventListener('click', backToLanding);
+
+        /**
+         * Handles the logout process, returning to the login page.
+         */
+        function logout() {
+            showSection(loginSection);
+            // Optionally clear any session data here if it were a real app
+        }
+
+        logoutButtonLanding.addEventListener('click', logout);
+        logoutButtonContabilidad.addEventListener('click', logout);
+        logoutButtonGaleria.addEventListener('click', logout);
+
+        // --- Data Rendering Functions ---
+
+        /**
+         * Renders the gallery images.
+         */
+        function renderGalleryImages() {
+            imageGrid.innerHTML = ''; // Clear previous images
+            galleryImages.forEach(image => {
+                const imageContainer = document.createElement('div');
+                imageContainer.classList.add('rounded-lg', 'overflow-hidden', 'shadow-md', 'transition', 'duration-300', 'transform', 'hover:scale-105', 'hover:shadow-xl', 'border', 'border-fuchsia-600'); /* Añadir borde */
+
+                const img = document.createElement('img');
+                img.src = image.src;
+                img.alt = image.alt;
+                img.classList.add('w-full', 'h-48', 'object-cover'); // Fixed height for consistency
+
+                imageContainer.appendChild(img);
+                imageGrid.appendChild(imageContainer);
+            });
+        }
+
+        // PWA: Service Worker Registration
+        // This script registers your service worker.
+        // The service worker file (service-worker.js) and manifest.json must be in the root of your project.
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then((registration) => {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch((err) => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+
+
+        // Initial view: Show login section
+        document.addEventListener('DOMContentLoaded', () => {
+            showSection(loginSection);
+        });
+
+    </script>
+</body>
+</html>

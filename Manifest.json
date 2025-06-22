@@ -1,0 +1,21 @@
+{
+  "name": "Resistenzia Manager",
+  "short_name": "Resistenzia",
+  "description": "Aplicación para gestionar la peña festiva Resistenzia.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#1a1a1a",
+  "theme_color": "#fuchsia-600",
+  "icons": [
+    {
+      "src": "https://i.imgur.com/fuK5gOa.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://i.imgur.com/fuK5gOa.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
